@@ -26,12 +26,6 @@ public class Seed
         
         foreach (var user in users)
         {
-            foreach (var photo in user.Photos)
-            {
-                photo.AppUser = user; 
-            }
-            
-            
             using var hmac = new HMACSHA512();
 
             user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("y2jB$#"));
