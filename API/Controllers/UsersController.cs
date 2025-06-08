@@ -82,7 +82,8 @@ namespace API.Controllers
 
             if (await userRepository.SaveAllAsync())
             {
-                return mapper.Map<PhotoDto>(photo);
+                //return mapper.Map<PhotoDto>(photo);
+                return Created(photo.Url, mapper.Map<PhotoDto>(photo));
             }
             
             return BadRequest("Failed to add photo");
