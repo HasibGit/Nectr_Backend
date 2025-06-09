@@ -2,9 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using API.Data;
 using API.DTOs;
-using API.Entities;
 using API.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,7 +42,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await context.Users.FirstOrDefaultAsync(user => user.UserName.ToLower() == loginDto.UserName.ToLower());
+            var user = await context.Users.Include(user => user.Photos).FirstOrDefaultAsync(user => user.UserName.ToLower() == loginDto.UserName.ToLower());
 
             if (user is null)
             {
@@ -62,7 +60,8 @@ namespace API.Controllers
             return new UserDto
             {
                 UserName = user.UserName,
-                Token = tokenService.CreateToken(user)
+                Token = tokenService.CreateToken(user),
+                PhotoUrl = user.Photos?.FirstOrDefault(x => x.IsMain)?.Url
             }; 
         }   
 
