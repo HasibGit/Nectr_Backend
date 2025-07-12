@@ -1,5 +1,6 @@
 using API.DTOs;
 using API.Entities;
+using API.Helper;
 using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
 
-public class UserRepository(DataContext context, IMapper mapper): IUserRepository
+public class UserRepository(DataContext context, IMapper mapper) : IUserRepository
 {
     public void Update(AppUser user)
     {
@@ -38,12 +39,11 @@ public class UserRepository(DataContext context, IMapper mapper): IUserRepositor
             .SingleOrDefaultAsync(user => user.UserName.ToLower() == username.ToLower());
     }
 
-    public async Task<IEnumerable<MemberDto>> GetMembersAsync()
+    public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
     {
-        return await context.Users
-            .ProjectTo<MemberDto>(mapper.ConfigurationProvider)
-            .ToListAsync();
-    
+        var query = context.Users.ProjectTo<MemberDto>(mapper.ConfigurationProvider);
+
+        return await PagedList<MemberDto>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
     }
 
     public async Task<MemberDto?> GetMemberByUsernameAsync(string username)
