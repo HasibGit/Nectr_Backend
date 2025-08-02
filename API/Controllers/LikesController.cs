@@ -53,9 +53,12 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetLikes(string predicate)
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetLikes([FromQuery] LikesParams likesParams)
         {
-            var users = await likeRepository.GetLikes(predicate, User.GetUserId());
+            likesParams.UserId = User.GetUserId();
+            var users = await likeRepository.GetLikes(likesParams);
+
+            Response.AddPaginationHeader(users);
 
             return Ok(users);
         }
