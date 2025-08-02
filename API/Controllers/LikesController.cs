@@ -46,7 +46,7 @@ namespace API.Controllers
         }
 
 
-        [HttpGet("ids")]
+        [HttpGet("list")]
         public async Task<ActionResult<IEnumerable<int>>> GetLikeIds()
         {
             return Ok(await likeRepository.GetLikeIds(User.GetUserId()));
