@@ -2,15 +2,16 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using API.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
 
 public class Seed
 {
-    public static async Task SeedUsers(DataContext context)
+    public static async Task SeedUsers(UserManager<AppUser> userManager)
     {
-        if (await context.Users.AnyAsync())
+        if (await userManager.Users.AnyAsync())
         {
             return;
         }
@@ -26,11 +27,7 @@ public class Seed
 
         foreach (var user in users)
         {
-            using var hmac = new HMACSHA512();
-
-            context.Users.Add(user);
+            await userManager.CreateAsync(user, "minFiCo34$%");
         }
-
-        await context.SaveChangesAsync();
     }
 }
