@@ -52,7 +52,7 @@ public class Seed
             Country = ""
         };
 
-        await userManager.CreateAsync(admin);
+        await userManager.CreateAsync(admin, "minFiCo34$%");
         await userManager.AddToRolesAsync(admin, ["Admin", "Moderator"]);
     }
 }
