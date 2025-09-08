@@ -26,6 +26,7 @@ public static class ApplicationServiceExtensions
         services.AddScoped<UpdateUserActivity>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+        services.AddSignalR();
 
         return services;
     }
