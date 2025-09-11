@@ -69,8 +69,10 @@ public class MessageHub(IMessageRepository messageRepository, IUserRepository us
 
             await Clients.Group(group).SendAsync("NewMessage", mapper.Map<MessageDto>(message));
         }
-
-        throw new HubException("Message sending failed");
+        else
+        {
+            throw new HubException("Message sending failed");
+        }
     }
 
     private string GetGroupName(string sender, string receiver)
