@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     [Authorize]
-    public class LikesController(ILikeRepository likeRepository) : BaseApiController
+    public class LikesController(IUnitOfWork unitOfWork) : BaseApiController
     {
         [HttpPost("{targetUserId:int}")]
         public async Task<ActionResult> ToggleLike(int targetUserId)
@@ -20,7 +20,7 @@ namespace API.Controllers
                 return BadRequest("You cannot like yourself");
             }
 
-            var likeStatus = await likeRepository.GetLike(sourceUserId, targetUserId);
+            var likeStatus = await unitOfWork.LikeRepository.GetLike(sourceUserId, targetUserId);
 
             if (likeStatus == null)
             {
@@ -30,14 +30,14 @@ namespace API.Controllers
                     TargetUserId = targetUserId
                 };
 
-                likeRepository.AddLike(like);
+                unitOfWork.LikeRepository.AddLike(like);
             }
             else
             {
-                likeRepository.DeleteLike(likeStatus);
+                unitOfWork.LikeRepository.DeleteLike(likeStatus);
             }
 
-            if (await likeRepository.SaveChanges())
+            if (await unitOfWork.Complete())
             {
                 return Ok();
             }
@@ -49,14 +49,14 @@ namespace API.Controllers
         [HttpGet("list")]
         public async Task<ActionResult<IEnumerable<int>>> GetLikeIds()
         {
-            return Ok(await likeRepository.GetLikeIds(User.GetUserId()));
+            return Ok(await unitOfWork.LikeRepository.GetLikeIds(User.GetUserId()));
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetLikes([FromQuery] LikesParams likesParams)
         {
             likesParams.UserId = User.GetUserId();
-            var users = await likeRepository.GetLikes(likesParams);
+            var users = await unitOfWork.LikeRepository.GetLikes(likesParams);
 
             Response.AddPaginationHeader(users);
 
