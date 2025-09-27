@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  nectr-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nectr-backend-api
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+    volumes:
+      # Mount a volume for SQLite database persistence
+      - nectr-db-volume:/app
+    networks:
+      - nectr-network
+
+volumes:
+  nectr-db-volume:
+    driver: local
+
+networks:
+  nectr-network:
+    driver: bridge
