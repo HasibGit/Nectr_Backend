@@ -18,7 +18,7 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(x => x.AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials()
-                  .WithOrigins("http://localhost:4200", "http://localhost:4200"));
+                  .WithOrigins("https://nectr-frontend.onrender.com", "http://localhost:4200"));
 
 app.UseAuthentication();
 app.UseAuthorization();
